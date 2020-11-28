@@ -1,0 +1,10 @@
+CREATE TABLE user_table (
+	user_id serial PRIMARY KEY,
+	user_name VARCHAR(100) UNIQUE NOT NULL,
+	first_name VARCHAR(100) NOT NULL,
+	last_name VARCHAR(100) DEFAULT NULL,
+	password_enc VARCHAR(100) NOT NULL,
+	salt VARCHAR(100) NOT NULL,
+	location VARCHAR(100) DEFAULT NULL,
+	mobile_number VARCHAR(100) DEFAULT NULL
+);

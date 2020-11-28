@@ -1,0 +1,24 @@
+server:
+  port: 8181
+  servlet:
+    context-path: /vlib
+
+spring:
+  application:
+    name: video-lib
+  datasource:
+    url: jdbc:postgresql://ec2-34-225-162-157.compute-1.amazonaws.com:5432/d2q7onkrfthu7j
+    username: vwozgpvjclthjg
+    password: cde17aaa8e46d1cdda23ea310de61e3dd4586df8999818822928f24b522670d4
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  path: ${user.home}/logs
