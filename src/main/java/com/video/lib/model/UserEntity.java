@@ -40,32 +40,11 @@ public class UserEntity {
     @Column(name="password_enc", nullable = false)
     private String passwordEnc;
 
-    @Column(name = "salt", nullable = false)
-    private String salt;
-
-    @Transient
-    private String password;
-
     @Column(name = "location")
     private String location;
 
     @Column(name = "mobile_number")
     private String mobileNumber;
 
-    @PrePersist
-    public void prePersist(){
-        if(Objects.isNull(salt))
-            salt = UUID.randomUUID().toString().replaceAll("-","");
 
-        if(Objects.nonNull(password)){
-            passwordEnc = CryptoUtil.encrypt(password, salt);
-        }
-    }
-
-    @PostLoad
-    public void postLoad(){
-        if(Objects.nonNull(salt) && Objects.nonNull(passwordEnc)){
-            password = CryptoUtil.decrypt(passwordEnc, salt);
-        }
-    }
 }

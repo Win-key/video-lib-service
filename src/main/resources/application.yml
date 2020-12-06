@@ -20,5 +20,12 @@ spring:
           use_jdbc_metadata_defaults: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+vlib:
+  jwt:
+    expire: 60
+    signing:
+      key: vlibsigningkeyveranamethonalapa
+
 logging:
-  path: ${user.home}/logs
+  file:
+    path: ${user.home}/logs
