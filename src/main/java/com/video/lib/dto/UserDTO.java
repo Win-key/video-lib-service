@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Venkatesh Rajendran
+ */
+
 @Data
 @NoArgsConstructor
 public class UserDTO {

@@ -11,20 +11,35 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
+
+/**
+ * @author Venkatesh Rajendran
+ * Provide JWS based token (Only signature not Encryption)
+ */
 
 @Service
 @Slf4j
 public class TokenProvider {
 
+    private String secretKey;
     private Environment env;
 
     @Autowired
     public TokenProvider(Environment env) {
         this.env = env;
+    }
+
+    @PostConstruct
+    public void postConstruct(){
+        // Encoding the secret ensure little more security when we use static key
+        this.secretKey = Base64.getEncoder().encodeToString(env.getProperty("vlib.jwt.signing.key").getBytes());
     }
 
     public String createToken(Authentication authentication) {
@@ -35,16 +50,16 @@ public class TokenProvider {
         Date expiryDate = new Date(now.getTime() + Integer.parseInt(Objects.isNull(expire)? "30" : expire));
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(userPrincipal.getUserName())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, env.getProperty("vlib.jwt.signing.key"))
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
     public Integer getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey( env.getProperty("vlib.jwt.signing.key"))
+                .setSigningKey( secretKey)
                 .parseClaimsJws(token)
                 .getBody();
 

@@ -11,6 +11,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Venkatesh Rajendran
+ */
+
 public class UserPrincipal implements OAuth2User, UserDetails {
     private Integer id;
     private String userName;

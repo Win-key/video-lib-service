@@ -1,21 +1,21 @@
 package com.video.lib.model;
 
-import com.video.lib.utils.CryptoUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.Objects;
-import java.util.UUID;
+
+/**
+ * @author Venkatesh Rajendran
+ */
 
 @Data
 @NoArgsConstructor
@@ -46,5 +46,8 @@ public class UserEntity {
     @Column(name = "mobile_number")
     private String mobileNumber;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private AuthProvider provider;
 
 }

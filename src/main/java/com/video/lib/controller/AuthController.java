@@ -23,6 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
+/**
+ * @author Venkatesh Rajendran
+ */
+
 @RestController
 @RequestMapping("/auth/")
 public class AuthController {
