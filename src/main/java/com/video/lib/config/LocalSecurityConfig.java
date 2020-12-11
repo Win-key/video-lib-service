@@ -14,8 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
  * @author Venkatesh Rajendran
  */
 
-@Configuration
-@Profile("local")
+//@Configuration
+//@Profile("local")
 @Slf4j
 public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
 

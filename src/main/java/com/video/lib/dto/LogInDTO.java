@@ -13,7 +13,7 @@ import lombok.NonNull;
 public class LogInDTO {
 
     @NonNull
-    private String userName;
+    private String username;
     @NonNull
     private String password;
 

@@ -24,8 +24,8 @@ spring:
       client:
         registration:
           google:
-            clientId: 5014057553-8gm9um6vnli3cle5rgigcdjpdrid14m9.apps.googleusercontent.com
-            clientSecret: tWZKVLxaD_ARWsriiiUFYoIk
+            clientId: 745747569107-e0iforjd1is721bqjh1cf55pja4fvhg6.apps.googleusercontent.com
+            clientSecret: M-Xk_xIVqrUhJw8lcYPbAqtB
             redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
             scope:
               - email
@@ -33,11 +33,11 @@ spring:
 
 vlib:
   jwt:
-    expire: 60
+    expire: 600000000
     signing:
-      key: 926D96C90030DD58429D2751AC1BDBBC
+      key: XAhTdDNgZw8x693fEc4Rpoon5PlsCr6KnpyjAeWwhFRggwNFbNQwXgd7srdj
   oAuth2:
-    authorizedRedirectURIs: http://localhost:4200/oauth2/redirect
+    authorizedRedirectURIs: http://localhost:4200/
 
 logging:
   file:

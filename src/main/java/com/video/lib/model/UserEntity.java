@@ -29,7 +29,7 @@ public class UserEntity {
     private Integer userId;
 
     @Column(name="user_name", nullable = false, unique = true)
-    private String userName;
+    private String username;
 
     @Column(name="first_name", nullable = false)
     private String firstName;

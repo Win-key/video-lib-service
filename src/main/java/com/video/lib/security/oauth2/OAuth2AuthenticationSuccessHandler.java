@@ -66,7 +66,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
 
-        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+        String targetUrl = redirectUri.orElse(authorizedRedirectURIs.get(0));
 
         String token = tokenProvider.createToken(authentication);
 

@@ -38,7 +38,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         jsr250Enabled = true,
         prePostEnabled = true
 )
-@Profile("!local")
+//@Profile("!local")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private AuthService authService;
@@ -74,6 +74,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
+    /**
+     * For authentication with user name and password
+     * @param authenticationManagerBuilder
+     * @throws Exception
+     */
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder

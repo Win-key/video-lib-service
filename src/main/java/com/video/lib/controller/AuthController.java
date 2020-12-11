@@ -1,11 +1,12 @@
 package com.video.lib.controller;
 
+import com.video.lib.dto.BaseResponse;
 import com.video.lib.dto.LogInDTO;
 import com.video.lib.dto.UserDTO;
 import com.video.lib.model.UserEntity;
-import com.video.lib.response.LoginResponse;
 import com.video.lib.security.TokenProvider;
 import com.video.lib.service.AuthService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,38 +29,43 @@ import java.util.Optional;
  */
 
 @RestController
-@RequestMapping("/auth/")
+@RequestMapping("/auth")
 public class AuthController {
 
     public static String COOKIE_NAME = "x-auth-token";
 
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private TokenProvider tokenProvider;
+    private AuthService authService;
+    private ModelMapper modelMapper;
 
     @Autowired
-    private AuthService authService;
+    public AuthController(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder,
+                          TokenProvider tokenProvider, AuthService authService, ModelMapper modelMapper) {
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenProvider = tokenProvider;
+        this.authService = authService;
+        this.modelMapper = modelMapper;
+    }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registration(@RequestBody UserDTO registration){
-        return ResponseEntity.ok(authService.registerUser(registration));
+    public ResponseEntity<BaseResponse> registration(@RequestBody UserDTO registration){
+        BaseResponse<String> response = authService.registerUser(registration);
+        return response.asResponseEntity();
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LogInDTO login, HttpServletResponse response){
+    public ResponseEntity<BaseResponse> login(@RequestBody LogInDTO login, HttpServletResponse response){
 
-        Optional<UserEntity> userEntity = authService.userByUsername(login.getUserName());
-        if(userEntity.isEmpty())
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
+        Optional<UserEntity> userEntity = authService.userByUsername(login.getUsername());
+        if(userEntity.isEmpty()) {
+            return new BaseResponse<>(HttpStatus.UNAUTHORIZED, "User doesn't exist.").asResponseEntity();
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        login.getUserName(),
+                        login.getUsername(),
                         login.getPassword()
                 )
         );
@@ -68,9 +74,10 @@ public class AuthController {
 
         String token = tokenProvider.createToken(authentication);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE,COOKIE_NAME+"="+token)
-                .build();
+        UserDTO userDTO = modelMapper.map(userEntity.get(), UserDTO.class);
+        userDTO.setToken(token);
+        BaseResponse<UserDTO> baseResponse = new BaseResponse<>(HttpStatus.OK, userDTO);
+        return baseResponse.asResponseEntity();
     }
 
 }

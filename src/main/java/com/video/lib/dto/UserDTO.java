@@ -14,7 +14,7 @@ public class UserDTO {
 
     private Long userId;
 
-    private String userName;
+    private String username;
 
     private String firstName;
 
@@ -24,12 +24,14 @@ public class UserDTO {
     private String passwordEnc;
 
     @JsonIgnore
-    private String salt;
-
     private String password;
 
     private String location;
 
     private String mobileNumber;
+
+    private String provider;
+
+    private String token;
 
 }

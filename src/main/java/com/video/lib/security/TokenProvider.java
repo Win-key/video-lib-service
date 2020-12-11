@@ -29,6 +29,7 @@ import java.util.Objects;
 public class TokenProvider {
 
     private String secretKey;
+    private Integer expire;
     private Environment env;
 
     @Autowired
@@ -40,14 +41,16 @@ public class TokenProvider {
     public void postConstruct(){
         // Encoding the secret ensure little more security when we use static key
         this.secretKey = Base64.getEncoder().encodeToString(env.getProperty("vlib.jwt.signing.key").getBytes());
+
+        String expireProps = env.getProperty("vlib.jwt.expire");
+        this.expire = Integer.parseInt(Objects.isNull(expireProps)? "-1" : expireProps);
     }
 
     public String createToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Date now = new Date();
-        String expire = env.getProperty("vlib.jwt.expire");
-        Date expiryDate = new Date(now.getTime() + Integer.parseInt(Objects.isNull(expire)? "30" : expire));
+        Date expiryDate = new Date(now.getTime() + expire);
 
         return Jwts.builder()
                 .setSubject(userPrincipal.getUserName())
@@ -57,18 +60,18 @@ public class TokenProvider {
                 .compact();
     }
 
-    public Integer getUserIdFromToken(String token) {
+    public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey( secretKey)
                 .parseClaimsJws(token)
                 .getBody();
 
-        return Integer.parseInt(claims.getSubject());
+        return claims.getSubject();
     }
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(env.getProperty("vlib.jwt.signing.key")).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature");

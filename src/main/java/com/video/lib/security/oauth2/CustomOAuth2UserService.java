@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Venkatesh Rajendran
@@ -49,7 +50,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
 
-        Optional<UserEntity> userOptional = userRepository.findByUserName(oAuth2UserInfo.getEmail());
+        Optional<UserEntity> userOptional = userRepository.findByUsername(oAuth2UserInfo.getEmail());
         UserEntity user;
         if(userOptional.isPresent()) {
             user = userOptional.get();
@@ -71,13 +72,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
         user.setFirstName(oAuth2UserInfo.getName());
-        user.setUserName(oAuth2UserInfo.getEmail());
+        user.setUsername(oAuth2UserInfo.getEmail());
+        user.setPasswordEnc(UUID.randomUUID().toString());
         return userRepository.save(user);
     }
 
     private UserEntity updateExistingUser(UserEntity existingUser, OAuth2UserInfo oAuth2UserInfo) {
         existingUser.setFirstName(oAuth2UserInfo.getName());
-        existingUser.setUserName(oAuth2UserInfo.getEmail());
+        existingUser.setUsername(oAuth2UserInfo.getEmail());
         return userRepository.save(existingUser);
     }
 

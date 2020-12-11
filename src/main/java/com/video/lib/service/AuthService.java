@@ -1,5 +1,6 @@
 package com.video.lib.service;
 
+import com.video.lib.dto.BaseResponse;
 import com.video.lib.dto.LogInDTO;
 import com.video.lib.dto.UserDTO;
 import com.video.lib.model.UserEntity;
@@ -9,6 +10,7 @@ import com.video.lib.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,11 +39,11 @@ public class AuthService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String registerUser(UserDTO registration) {
-        UserEntity newUser =userRepository.findByUserName(registration.getUserName()).orElse(null);
+    public BaseResponse<String> registerUser(UserDTO registration) {
+        UserEntity newUser =userRepository.findByUsername(registration.getUsername()).orElse(null);
 
         if(Objects.nonNull(newUser)){
-            return "UserName already exist. Please try new one.";
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST,"UserName already exist. Please try new one.");
         }
 
         newUser = modelMapper.map(registration, UserEntity.class);
@@ -51,14 +53,14 @@ public class AuthService implements UserDetailsService {
             userRepository.save(newUser);
         }catch (Exception e){
             log.error("Unable to register the user. Please try again.");
-            return "Failed to register the user.";
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST,"Failed to register the user.");
         }
-        return "Successfully registered the user.";
+        return new BaseResponse<>(HttpStatus.OK,"Successfully registered the user.");
     }
 
     public LoginResponse login(LogInDTO logInDetails){
         LoginResponse loginResponse = new LoginResponse();
-        UserEntity userEntity = userRepository.findByUserName(logInDetails.getUserName()).orElse(null);
+        UserEntity userEntity = userRepository.findByUsername(logInDetails.getUsername()).orElse(null);
 
         if(Objects.isNull(userEntity)){
             loginResponse.setAuthenticated(false);
@@ -83,7 +85,7 @@ public class AuthService implements UserDetailsService {
     }
 
     public Optional<UserEntity> userByUsername(String userName) {
-        return userRepository.findByUserName(userName);
+        return userRepository.findByUsername(userName);
     }
 
     public UserDetails loadUserById(Integer userId) throws UsernameNotFoundException {
