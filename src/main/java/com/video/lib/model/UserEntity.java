@@ -1,21 +1,21 @@
 package com.video.lib.model;
 
-import com.video.lib.utils.CryptoUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.Objects;
-import java.util.UUID;
+
+/**
+ * @author Venkatesh Rajendran
+ */
 
 @Data
 @NoArgsConstructor
@@ -29,7 +29,7 @@ public class UserEntity {
     private Integer userId;
 
     @Column(name="user_name", nullable = false, unique = true)
-    private String userName;
+    private String username;
 
     @Column(name="first_name", nullable = false)
     private String firstName;
@@ -40,32 +40,14 @@ public class UserEntity {
     @Column(name="password_enc", nullable = false)
     private String passwordEnc;
 
-    @Column(name = "salt", nullable = false)
-    private String salt;
-
-    @Transient
-    private String password;
-
     @Column(name = "location")
     private String location;
 
     @Column(name = "mobile_number")
     private String mobileNumber;
 
-    @PrePersist
-    public void prePersist(){
-        if(Objects.isNull(salt))
-            salt = UUID.randomUUID().toString().replaceAll("-","");
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private AuthProvider provider;
 
-        if(Objects.nonNull(password)){
-            passwordEnc = CryptoUtil.encrypt(password, salt);
-        }
-    }
-
-    @PostLoad
-    public void postLoad(){
-        if(Objects.nonNull(salt) && Objects.nonNull(passwordEnc)){
-            password = CryptoUtil.decrypt(passwordEnc, salt);
-        }
-    }
 }

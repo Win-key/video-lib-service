@@ -4,12 +4,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+/**
+ * @author Venkatesh Rajendran
+ */
+
 @Data
 @NoArgsConstructor
 public class LogInDTO {
 
     @NonNull
-    private String userName;
+    private String username;
     @NonNull
     private String password;
 

@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author Venkatesh Rajendran
+ */
+
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginResponse {

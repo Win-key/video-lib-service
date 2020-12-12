@@ -19,6 +19,26 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 745747569107-e0iforjd1is721bqjh1cf55pja4fvhg6.apps.googleusercontent.com
+            clientSecret: M-Xk_xIVqrUhJw8lcYPbAqtB
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
+
+vlib:
+  jwt:
+    expire: 600000000
+    signing:
+      key: XAhTdDNgZw8x693fEc4Rpoon5PlsCr6KnpyjAeWwhFRggwNFbNQwXgd7srdj
+  oAuth2:
+    authorizedRedirectURIs: http://localhost:4200/
 
 logging:
-  path: ${user.home}/logs
+  file:
+    path: ${user.home}/logs
