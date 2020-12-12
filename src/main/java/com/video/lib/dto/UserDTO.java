@@ -23,7 +23,6 @@ public class UserDTO {
     @JsonIgnore
     private String passwordEnc;
 
-    @JsonIgnore
     private String password;
 
     private String location;
