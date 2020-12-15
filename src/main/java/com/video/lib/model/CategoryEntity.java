@@ -35,6 +35,13 @@ public class CategoryEntity implements Serializable {
     @Column(name = "category_id", nullable = false, unique = true)
     private String categoryId;
 
-    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL)
     private List<ContentEntity> contentList;
+
+    public void setContentList(List<ContentEntity> contentList) {
+        this.contentList.clear();
+        this.contentList.addAll(contentList);
+    }
+
+
 }
