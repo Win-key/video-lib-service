@@ -4,7 +4,7 @@ spring:
     username: postgres
     password: admin
     initialization-mode: always
-    data: classpath:db/data/truncate_tables.sql,classpath:db/data/V2020_12_14__data_category.sql
+    data: classpath:db/data/truncate_tables.sql,classpath:db/data/V2020_12_14__data_category.sql,classpath:db/data/V2020_12_19__data_content_playlist.sql
   jpa:
     ddl-auto: update
     show-sql: true
