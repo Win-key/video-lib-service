@@ -2,6 +2,7 @@ package com.video.lib.controller;
 
 import com.video.lib.dto.BaseResponse;
 import com.video.lib.dto.CategoryDTO;
+import com.video.lib.dto.CategoryWithContentDTO;
 import com.video.lib.dto.LogInDTO;
 import com.video.lib.exception.ResourceNotFoundException;
 import com.video.lib.service.CategoryService;
@@ -66,4 +67,12 @@ public class CategoryController {
         BaseResponse<String> response = categoryService.addOrUpdateCategory(isUpdate, categoryDTO);
         return response.asResponseEntity();
     }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/contents")
+    public ResponseEntity<BaseResponse> getContents(){
+        BaseResponse<List<CategoryWithContentDTO>> response = categoryService.getAllContents();
+        return response.asResponseEntity();
+    }
+
 }

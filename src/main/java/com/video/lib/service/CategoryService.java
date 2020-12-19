@@ -2,6 +2,7 @@ package com.video.lib.service;
 
 import com.video.lib.dto.BaseResponse;
 import com.video.lib.dto.CategoryDTO;
+import com.video.lib.dto.CategoryWithContentDTO;
 import com.video.lib.dto.LogInDTO;
 import com.video.lib.model.CategoryEntity;
 import com.video.lib.repository.CategoryRepository;
@@ -83,5 +84,11 @@ public class CategoryService {
             return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED, "Failed updated the category.");
         }
         return new BaseResponse<>(HttpStatus.CREATED, "Successfully updated the category.");
+    }
+
+    public BaseResponse<List<CategoryWithContentDTO>> getAllContents() {
+        List<CategoryEntity> allCategories = categoryRepository.findAll();
+        List<CategoryWithContentDTO> categoryWithContents = ObjectMapperUtils.mapAll(allCategories, CategoryWithContentDTO.class);
+        return new BaseResponse<>(HttpStatus.OK, categoryWithContents);
     }
 }

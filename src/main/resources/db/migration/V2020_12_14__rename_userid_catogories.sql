@@ -13,6 +13,6 @@ CREATE TABLE content_table (
     content_thumbnail TEXT NOT NULL,
     duration VARCHAR(100) NOT NULL,
     pricing VARCHAR(100) NOT NULL,
-    category_id VARCHAR(100) UNIQUE NOT NULL,
+    category_id VARCHAR(100) NOT NULL,
     FOREIGN KEY (category_id) REFERENCES category_table (category_id)
 );
