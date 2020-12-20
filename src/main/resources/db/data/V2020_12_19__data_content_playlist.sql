@@ -1,0 +1,10 @@
+INSERT INTO playlist_table
+    (video_id, start_time, title, src, type, thumbnail, description, duration, display_duration, content_id)
+VALUES
+    ('video1', 30,'Pale Blue Dot','http://static.videogular.com/assets/videos/videogular.mp4','video/mp4','https://videolib-upload-folder.s3.ap-south-1.amazonaws.com/oceans-small.jpg','Earth and its beauty','97','1.37m', 'nature-ocean'),
+    ('video2', 5,'Big Buck Bunny','https://video-portal-nandhan.s3.ap-south-1.amazonaws.com/A_large_rock_waterfall.mp4','video/mp4','https://videolib-upload-folder.s3.ap-south-1.amazonaws.com/oceans-small.jpg','The tales of Buck bunny','13','0.13m','nature-ocean'),
+    ('video3', 20,'Elephants Dream','http://static.videogular.com/assets/videos/elephants-dream.mp4','video/mp4','https://videolib-upload-folder.s3.ap-south-1.amazonaws.com/oceans-small.jpg','The dreams of the mighty tall elephant','653','10.37m','nature-forest'),
+    ('video4', 10,'Tom and Jerry','http://static.videogular.com/assets/videos/videogular.mp4','video/mp4','https://videolib-upload-folder.s3.ap-south-1.amazonaws.com/oceans-small.jpg','A story of life of a cat and a mouse','97','1.37m','children-cartoon'),
+    ('video5', 13,'Ben 10','http://static.videogular.com/assets/videos/videogular.mp4','video/mp4','https://videolib-upload-folder.s3.ap-south-1.amazonaws.com/oceans-small.jpg','Adventure story of a boy who got an alien weapon.','97','1.37m','children-cartoon'),
+    ('video6', 34,'Kick buttowski','http://static.videogular.com/assets/videos/videogular.mp4','video/mp4','https://videolib-upload-folder.s3.ap-south-1.amazonaws.com/oceans-small.jpg','Story of an Adventures crazy little boy kick and his friend gunther','97','1.37m','children-rhymes'),
+    ('video7', 42,'kid vs kat','http://static.videogular.com/assets/videos/videogular.mp4','video/mp4','https://videolib-upload-folder.s3.ap-south-1.amazonaws.com/oceans-small.jpg','Story of a boy copper and how did he stop evil plans of his sister''s Mr.cat, an alike alien','97','1.37m','children-rhymes');
