@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.List;
 
@@ -55,5 +56,8 @@ public class ContentEntity implements Serializable {
 
     @OneToMany(mappedBy = "contentEntity", cascade = CascadeType.ALL)
     private List<PlaylistEntity> playlists;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contentEntity", cascade = CascadeType.ALL)
+    private List<ReviewEntity> reviewEntities;
 
 }
