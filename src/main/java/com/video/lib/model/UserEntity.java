@@ -11,7 +11,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -51,4 +55,21 @@ public class UserEntity implements Serializable {
     @Column(name = "provider")
     private AuthProvider provider;
 
+    @Transient
+    private boolean isAdmin;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private UserRole role;
+
+    @PostLoad
+    public void postLoad(){
+        isAdmin = role == UserRole.ADMIN;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void prePersist(){
+        role = UserRole.ifAdmin(isAdmin);
+    }
 }
