@@ -3,7 +3,6 @@ package com.video.lib.service;
 import com.video.lib.dto.BaseResponse;
 import com.video.lib.dto.PlaylistDTO;
 import com.video.lib.dto.ReviewDTO;
-import com.video.lib.exception.ResourceNotFoundException;
 import com.video.lib.model.ContentEntity;
 import com.video.lib.model.PlaylistEntity;
 import com.video.lib.model.Rating;
@@ -14,7 +13,6 @@ import com.video.lib.repository.ReviewRepository;
 import com.video.lib.utils.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -116,6 +114,7 @@ public class ContentService {
             reviewEntity = new ReviewEntity();
         else
             reviewEntity = reviewOptional.get();
+
         reviewEntity.setUserEntity(userEntity.get());
         reviewEntity.setContentEntity(contentEntity.get());
         return reviewEntity;

@@ -4,11 +4,11 @@ import org.springframework.lang.NonNull;
 
 public enum Rating {
 
-    VERY_GOOD(0),
-    GOOD(1),
-    MEDIOCRE(2),
-    BAD(3),
-    VERY_BAD(4);
+    VERY_GOOD(1),
+    GOOD(2),
+    MEDIOCRE(3),
+    BAD(4),
+    VERY_BAD(5);
 
     private int value;
 
