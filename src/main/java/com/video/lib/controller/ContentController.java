@@ -44,4 +44,18 @@ public class ContentController {
         return response.asResponseEntity();
     }
 
+    @GetMapping(value = "/{contentID}/review")
+    public ResponseEntity<BaseResponse> userReview(@PathVariable("contentID") String contentID,
+                                                     @AuthenticationPrincipal UserPrincipal userPrincipal){
+        BaseResponse<Object> response = contentService.userReview(contentID, userPrincipal.getUsername());
+        return response.asResponseEntity();
+    }
+
+
+    @GetMapping(value = "/{contentID}/review/all")
+    public ResponseEntity<BaseResponse> allContentReview(@PathVariable("contentID") String contentID){
+        BaseResponse<Object> response = contentService.allReview(contentID);
+        return response.asResponseEntity();
+    }
+
 }
