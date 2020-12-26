@@ -116,6 +116,7 @@ public class ContentService {
             reviewEntity = new ReviewEntity();
         else
             reviewEntity = reviewOptional.get();
+
         reviewEntity.setUserEntity(userEntity.get());
         reviewEntity.setContentEntity(contentEntity.get());
         return reviewEntity;
