@@ -1,0 +1,2 @@
+ALTER TABLE user_table
+    ADD COLUMN role VARCHAR(100) DEFAULT 'USER';
