@@ -58,4 +58,10 @@ public class ContentController {
         return response.asResponseEntity();
     }
 
+    @GetMapping(value = "/{contentID}/avg")
+    public ResponseEntity<BaseResponse> avgContentRating(@PathVariable("contentID") String contentID){
+        BaseResponse<Object> response = contentService.avgRating(contentID);
+        return response.asResponseEntity();
+    }
+
 }

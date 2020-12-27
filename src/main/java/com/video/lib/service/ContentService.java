@@ -3,6 +3,7 @@ package com.video.lib.service;
 import com.video.lib.dto.BaseResponse;
 import com.video.lib.dto.PlaylistDTO;
 import com.video.lib.dto.ReviewDTO;
+import com.video.lib.dto.ReviewUserDto;
 import com.video.lib.model.ContentEntity;
 import com.video.lib.model.PlaylistEntity;
 import com.video.lib.model.Rating;
@@ -121,14 +122,18 @@ public class ContentService {
     }
 
     public BaseResponse<Object> allReview(String contentID) {
-        Optional<ContentEntity> contentEntity = contentRepository.findByContentID(contentID);
-        if(contentEntity.isEmpty())
+        List<ReviewUserDto> contentUserDto = contentRepository.findReviewAndUserByContentID(contentID);
+        if(Objects.isNull(contentUserDto) || contentUserDto.isEmpty())
             return new BaseResponse<>(HttpStatus.NOT_FOUND,"Content doesn't found! Please try later.");
 
-        List<ReviewDTO> reviews = contentEntity.get().getReviewEntities().stream()
-                                    .map(this::mapReviewDTO)
-                                    .collect(Collectors.toList());
+        return new BaseResponse<>(HttpStatus.OK, contentUserDto);
+    }
 
-        return new BaseResponse<>(HttpStatus.OK, reviews);
+    public BaseResponse<Object> avgRating(String contentID){
+        Integer avgRating = contentRepository.avgRating(contentID);
+        if(Objects.isNull(avgRating))
+            return new BaseResponse<>(HttpStatus.OK, 0);
+
+        return new BaseResponse<>(HttpStatus.OK, avgRating);
     }
 }

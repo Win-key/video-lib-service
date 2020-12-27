@@ -22,4 +22,6 @@ public class ContentDTO {
 
     private String pricing;
 
+    private String overview;
+
 }

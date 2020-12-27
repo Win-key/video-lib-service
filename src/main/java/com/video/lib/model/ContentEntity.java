@@ -50,6 +50,9 @@ public class ContentEntity implements Serializable {
     @Column(name = "pricing", nullable = false)
     private String pricing;
 
+    @Column(name = "overview")
+    private String overview;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "category_id", nullable = false)
     private CategoryEntity categoryEntity;
