@@ -11,22 +11,26 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Venkatesh Rajendran
- * @vendor (Ideas2IT)
+ *
  */
 
 @Data
 @Entity
 @Table(name = "playlist_table")
-public class PlaylistEntity {
+public class PlaylistEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id",unique = true, nullable = false)
     private Integer id;
+
+    @Column(name = "video_id")
+    private String videoId;
 
     // Todo : Fix me this should be wrt User
     @Column(name = "start_time" )
@@ -50,7 +54,7 @@ public class PlaylistEntity {
     private String displayDuration;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "content_id", referencedColumnName = "content_id", nullable = false)
+    @JoinColumn(name = "content_id", referencedColumnName = "content_id")
     private ContentEntity contentEntity;
 
 }

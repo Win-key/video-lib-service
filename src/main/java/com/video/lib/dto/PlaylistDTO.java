@@ -13,6 +13,7 @@ import java.util.Date;
 public class PlaylistDTO {
 
     private Integer id;
+    private String videoId;
     private Long startTime;
     private String title;
     private String src;
