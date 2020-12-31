@@ -1,15 +1,20 @@
 package com.video.lib.service;
 
 import com.video.lib.dto.BaseResponse;
+import com.video.lib.dto.ContentDTO;
+import com.video.lib.dto.ContentPlaylistDto;
 import com.video.lib.dto.PlaylistDTO;
 import com.video.lib.dto.ReviewDTO;
 import com.video.lib.dto.ReviewUserDto;
+import com.video.lib.model.CategoryEntity;
 import com.video.lib.model.ContentEntity;
 import com.video.lib.model.PlaylistEntity;
 import com.video.lib.model.Rating;
 import com.video.lib.model.ReviewEntity;
 import com.video.lib.model.UserEntity;
+import com.video.lib.repository.CategoryRepository;
 import com.video.lib.repository.ContentRepository;
+import com.video.lib.repository.PlaylistRepository;
 import com.video.lib.repository.ReviewRepository;
 import com.video.lib.utils.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -37,27 +43,33 @@ public class ContentService {
     private ContentRepository contentRepository;
     private AuthService authService;
     private ReviewRepository reviewRepository;
+    private PlaylistRepository playlistRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
-    public ContentService(ContentRepository contentRepository, AuthService authService, ReviewRepository reviewRepository) {
+    public ContentService(ContentRepository contentRepository, AuthService authService,
+                          ReviewRepository reviewRepository, PlaylistRepository playlistRepository,
+                          CategoryRepository categoryRepository) {
         this.contentRepository = contentRepository;
         this.authService = authService;
         this.reviewRepository = reviewRepository;
+        this.playlistRepository = playlistRepository;
+        this.categoryRepository = categoryRepository;
     }
 
-    public BaseResponse<List<PlaylistDTO>> getContentPlaylist(String contentID) {
+    public BaseResponse<ContentPlaylistDto> getContentPlaylist(String contentID) {
         Optional<ContentEntity> contentOptional = contentRepository.findByContentID(contentID);
         if (contentOptional.isEmpty()){
-            return new BaseResponse<>(HttpStatus.NO_CONTENT, Collections.emptyList());
+            return new BaseResponse<>(HttpStatus.NO_CONTENT, new ContentPlaylistDto());
         }
         try {
-            List<PlaylistEntity> playlists = contentOptional.get().getPlaylists();
-            return new BaseResponse<>(HttpStatus.OK, ObjectMapperUtils.mapAll(playlists, PlaylistDTO.class));
+            ContentEntity contentEntity = contentOptional.get();
+            return new BaseResponse<>(HttpStatus.OK, ObjectMapperUtils.map(contentEntity, ContentPlaylistDto.class));
         }catch (Exception e){
             log.error("Unable to load the playlist", e);
         }
 
-        return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED, Collections.emptyList());
+        return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED,  new ContentPlaylistDto());
     }
 
     public BaseResponse<String> submitReview(String contentID,String username,  ReviewDTO reviewDTO) {
@@ -136,5 +148,35 @@ public class ContentService {
             return new BaseResponse<>(HttpStatus.OK, 0);
 
         return new BaseResponse<>(HttpStatus.OK, avgRating);
+    }
+
+    @Transactional
+    public BaseResponse<String> postContentData(ContentPlaylistDto contentPlaylist) {
+        ContentEntity contentEntity = ObjectMapperUtils.map(contentPlaylist, ContentEntity.class);
+        Optional<ContentEntity> contentOpt = contentRepository.findByContentID(contentPlaylist.getContentID());
+        if(contentOpt.isPresent()){
+            ContentEntity contentEditable = contentOpt.get();
+            contentEntity.setId(contentEditable.getId());
+            contentEntity.setReviewEntities(contentEditable.getReviewEntities());
+            contentEntity.setCategoryEntity(contentEditable.getCategoryEntity());
+
+            playlistRepository.deleteByContentEntity(contentEditable);
+        }else{
+            Optional<CategoryEntity> categoryOpt = categoryRepository.findByCategoryId(contentPlaylist.getCategoryID());
+            if(categoryOpt.isPresent()){
+                contentEntity.setCategoryEntity(categoryOpt.get());
+            }else
+                return new BaseResponse<>(HttpStatus.BAD_REQUEST, "It's an Content! Please add it to a content");
+        }
+
+        contentEntity.getPlaylists().forEach(playlist->playlist.setContentEntity(contentEntity));
+
+        try {
+            contentRepository.save(contentEntity);
+        }catch (Exception e){
+            log.error("Exception: Unable to store the content for give data content ID {}",contentPlaylist.getContentID(),e);
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST, "Unable to store the data");
+        }
+        return new BaseResponse<>(HttpStatus.OK, "Successfully store the content data");
     }
 }

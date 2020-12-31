@@ -1,10 +1,14 @@
 package com.video.lib.controller;
 
 import com.video.lib.dto.BaseResponse;
+import com.video.lib.dto.ContentDTO;
+import com.video.lib.dto.ContentPlaylistDto;
 import com.video.lib.dto.PlaylistDTO;
 import com.video.lib.dto.ReviewDTO;
+import com.video.lib.model.ContentEntity;
 import com.video.lib.security.UserPrincipal;
 import com.video.lib.service.ContentService;
+import com.video.lib.utils.ObjectMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -30,9 +34,15 @@ public class ContentController {
     @Autowired
     private ContentService contentService;
 
+    @PostMapping
+    public ResponseEntity<BaseResponse> postContentPlaylist(@NonNull @RequestBody ContentPlaylistDto contentPlaylist){
+        BaseResponse<String> response = contentService.postContentData(contentPlaylist);
+        return response.asResponseEntity();
+    }
+
     @GetMapping(value = "/{contentID}")
     public ResponseEntity<BaseResponse> getContentPlaylist(@NonNull @PathVariable("contentID") String contentID){
-        BaseResponse<List<PlaylistDTO>> response = contentService.getContentPlaylist(contentID);
+        BaseResponse<ContentPlaylistDto> response = contentService.getContentPlaylist(contentID);
         return response.asResponseEntity();
     }
 
