@@ -6,12 +6,11 @@ import java.util.List;
 
 /**
  * @author Venkatesh Rajendran
- *
+ * @vendor (Ideas2IT)
  */
 
 @Data
-public class ContentDTO {
-
+public class ContentPlaylistDto {
     private String contentID;
 
     private String contentDisplayName;
@@ -26,4 +25,7 @@ public class ContentDTO {
 
     private String overview;
 
+    List<PlaylistDTO> playlists;
+
+    private String categoryID;
 }
