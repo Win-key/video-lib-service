@@ -8,12 +8,14 @@ import com.video.lib.dto.ReviewDTO;
 import com.video.lib.dto.ReviewUserDto;
 import com.video.lib.model.CategoryEntity;
 import com.video.lib.model.ContentEntity;
+import com.video.lib.model.DurationEntity;
 import com.video.lib.model.PlaylistEntity;
 import com.video.lib.model.Rating;
 import com.video.lib.model.ReviewEntity;
 import com.video.lib.model.UserEntity;
 import com.video.lib.repository.CategoryRepository;
 import com.video.lib.repository.ContentRepository;
+import com.video.lib.repository.DurationRepository;
 import com.video.lib.repository.PlaylistRepository;
 import com.video.lib.repository.ReviewRepository;
 import com.video.lib.utils.ObjectMapperUtils;
@@ -44,16 +46,18 @@ public class ContentService {
     private ReviewRepository reviewRepository;
     private PlaylistRepository playlistRepository;
     private CategoryRepository categoryRepository;
+    private DurationRepository durationRepository;
 
     @Autowired
     public ContentService(ContentRepository contentRepository, AuthService authService,
                           ReviewRepository reviewRepository, PlaylistRepository playlistRepository,
-                          CategoryRepository categoryRepository) {
+                          CategoryRepository categoryRepository, DurationRepository durationRepository) {
         this.contentRepository = contentRepository;
         this.authService = authService;
         this.reviewRepository = reviewRepository;
         this.playlistRepository = playlistRepository;
         this.categoryRepository = categoryRepository;
+        this.durationRepository = durationRepository;
     }
 
     public BaseResponse<ContentPlaylistDto> getContentPlaylist(String contentID) {
@@ -177,5 +181,35 @@ public class ContentService {
             return new BaseResponse<>(HttpStatus.BAD_REQUEST, "Unable to store the data");
         }
         return new BaseResponse<>(HttpStatus.OK, "Successfully store the content data");
+    }
+
+    public BaseResponse<String> postVideoDuration(String videoID, Long duration, String username) {
+        Optional<PlaylistEntity> playlistOpt =playlistRepository.findByVideoId(videoID);
+        if(playlistOpt.isEmpty()){
+            return new BaseResponse<>(HttpStatus.NOT_FOUND, String.format("Playlist with given id %s is not found!",videoID));
+        }
+
+        Optional<UserEntity> userOpt = authService.userByUsername(username);
+        if(userOpt.isEmpty()){
+            return new BaseResponse<>(HttpStatus.NOT_FOUND, String.format("User with given id %s is not found!",username));
+        }
+
+        Optional<DurationEntity> durationOpt = durationRepository.findByVideoAndUser(playlistOpt.get(), userOpt.get());
+
+        DurationEntity durationEntity;
+        if(durationOpt.isPresent()){
+            durationEntity = durationOpt.get();
+            durationEntity.setDuration(duration);
+        }else{
+            durationEntity = new DurationEntity(duration, playlistOpt.get(), userOpt.get());
+        }
+
+        try {
+            durationRepository.save(durationEntity);
+        }catch (Exception e){
+            log.error("Unable to store the duration for the video id {}",videoID, e);
+            return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED, String.format("Playlist with given id %s is not found!",videoID));
+        }
+        return new BaseResponse<>(HttpStatus.OK, "Successfully added the duration");
     }
 }
