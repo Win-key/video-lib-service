@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 /**
  * @author Venkatesh Rajendran
  */
@@ -16,5 +18,7 @@ public interface PlaylistRepository extends JpaRepository<PlaylistEntity, Intege
     @Modifying
     @Query(value = " delete from PlaylistEntity pl where pl.contentEntity = :contentEntity")
     void deleteByContentEntity(@Param("contentEntity") ContentEntity contentEntity);
+
+    Optional<PlaylistEntity> findByVideoId(String videoID);
 
 }
