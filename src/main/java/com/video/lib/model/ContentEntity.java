@@ -63,4 +63,7 @@ public class ContentEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contentEntity", cascade = CascadeType.ALL)
     private List<ReviewEntity> reviewEntities;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contentEntity", cascade = CascadeType.ALL)
+    private List<DurationEntity> durationEntities;
+
 }

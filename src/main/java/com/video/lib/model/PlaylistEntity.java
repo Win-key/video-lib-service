@@ -2,6 +2,7 @@ package com.video.lib.model;
 
 import lombok.Data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,9 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Venkatesh Rajendran
@@ -57,4 +60,6 @@ public class PlaylistEntity implements Serializable {
     @JoinColumn(name = "content_id", referencedColumnName = "content_id")
     private ContentEntity contentEntity;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "playlistEntity", cascade = CascadeType.ALL)
+    private List<DurationEntity> durationEntities;
 }

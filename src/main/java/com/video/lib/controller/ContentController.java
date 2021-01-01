@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +44,13 @@ public class ContentController {
     @GetMapping(value = "/{contentID}")
     public ResponseEntity<BaseResponse> getContentPlaylist(@NonNull @PathVariable("contentID") String contentID){
         BaseResponse<ContentPlaylistDto> response = contentService.getContentPlaylist(contentID);
+        return response.asResponseEntity();
+    }
+
+    @PutMapping(value = "/video/{videoID}/{duration}")
+    public ResponseEntity<BaseResponse> postVideoDuration(@PathVariable("videoID") String videoID,@PathVariable("duration") Long duration,
+                                                          @AuthenticationPrincipal UserPrincipal userPrincipal){
+        BaseResponse<String> response = contentService.postVideoDuration(videoID, duration, userPrincipal.getUsername());
         return response.asResponseEntity();
     }
 
