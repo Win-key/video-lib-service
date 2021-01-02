@@ -42,8 +42,8 @@ public class ContentController {
     }
 
     @GetMapping(value = "/{contentID}")
-    public ResponseEntity<BaseResponse> getContentPlaylist(@NonNull @PathVariable("contentID") String contentID){
-        BaseResponse<ContentPlaylistDto> response = contentService.getContentPlaylist(contentID);
+    public ResponseEntity<BaseResponse> getContentPlaylist(@NonNull @PathVariable("contentID") String contentID, @AuthenticationPrincipal UserPrincipal userPrincipal){
+        BaseResponse<ContentPlaylistDto> response = contentService.getContentPlaylist(contentID, userPrincipal.getUsername());
         return response.asResponseEntity();
     }
 
