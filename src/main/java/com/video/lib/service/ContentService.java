@@ -28,7 +28,9 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,19 +63,39 @@ public class ContentService {
         this.durationRepository = durationRepository;
     }
 
-    public BaseResponse<ContentPlaylistDto> getContentPlaylist(String contentID) {
+    public BaseResponse<ContentPlaylistDto> getContentPlaylist(String contentID, String username) {
         Optional<ContentEntity> contentOptional = contentRepository.findByContentID(contentID);
         if (contentOptional.isEmpty()){
             return new BaseResponse<>(HttpStatus.NO_CONTENT, new ContentPlaylistDto());
         }
         try {
             ContentEntity contentEntity = contentOptional.get();
-            return new BaseResponse<>(HttpStatus.OK, ObjectMapperUtils.map(contentEntity, ContentPlaylistDto.class));
+            ContentPlaylistDto contentPlaylistDto = ObjectMapperUtils.map(contentEntity, ContentPlaylistDto.class);
+            getPlaylistDuration(contentPlaylistDto, contentEntity, username);
+            return new BaseResponse<>(HttpStatus.OK, contentPlaylistDto);
         }catch (Exception e){
             log.error("Unable to load the playlist", e);
         }
 
-        return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED,  new ContentPlaylistDto());
+        return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED, new ContentPlaylistDto());
+    }
+
+    private void getPlaylistDuration(ContentPlaylistDto contentPlaylistDto, ContentEntity contentEntity, String username) {
+        Optional<UserEntity> userEntity = authService.userByUsername(username);
+        if(userEntity.isEmpty()){
+            return;
+        }
+        Map<String, PlaylistDTO> videoMap = new HashMap<>();
+        contentPlaylistDto.getPlaylists().forEach(playlistDTO -> videoMap.put(playlistDTO.getVideoId(), playlistDTO));
+        contentEntity.getPlaylists().forEach(video-> videoMap.get(video.getVideoId()).setStartTime(getPlaylistDuration(video,userEntity.get())));
+    }
+
+    private Long getPlaylistDuration(PlaylistEntity video, UserEntity user) {
+        Optional<DurationEntity> durationOpt = durationRepository.findByVideoAndUser(video, user);
+        if(durationOpt.isEmpty()){
+            return 0L;
+        }
+        return durationOpt.get().getDuration();
     }
 
     public BaseResponse<String> submitReview(String contentID,String username,  ReviewDTO reviewDTO) {
