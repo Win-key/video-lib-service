@@ -50,7 +50,7 @@ public class ContentController {
     @PutMapping(value = "/video/{videoID}/{duration}")
     public ResponseEntity<BaseResponse> postVideoDuration(@PathVariable("videoID") String videoID,@PathVariable("duration") Long duration,
                                                           @AuthenticationPrincipal UserPrincipal userPrincipal){
-        BaseResponse<String> response = contentService.postVideoDuration(videoID, duration, "winkey");
+        BaseResponse<String> response = contentService.postVideoDuration(videoID, duration, userPrincipal.getUsername());
         return response.asResponseEntity();
     }
 
